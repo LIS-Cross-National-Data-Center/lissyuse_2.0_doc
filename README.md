@@ -13,8 +13,11 @@ github pages, sometimes it just takes a while .....
 
 
 quarto render
+
 git add . 
+
 commit  
+
 git push 
 
 
