@@ -61,7 +61,7 @@ A list named `lis_datasets` or `lws_datasets`. Each element of the list will be 
 ## Examples
 
 ```{r, eval = FALSE}
-{ech}
+
 
 library(lissyrtools)
 library(dplyr)
