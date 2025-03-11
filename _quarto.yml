@@ -1,5 +1,6 @@
 project:
-  title: "lissyuse_2.0_doc"
+  type: website
+  output-dir: docs
 
 editor: visual
 

@@ -1,11 +1,118 @@
 ---
-title: "lissyuse_2.0_doc"
+title: "Load data easily and efficiently with lissyuse"
+author: "Gonçalo Marques - Luxembourg Income Study"
+format: html
+editor: visual
 ---
 
-## Quarto
+## Description
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+The function `lissyuse()` enables LISSY R-users to quickly import whole series of data from a specific country and/or within any time period. Test Test 2025
 
-```{r}
-1 + 1
+It also automatically merges, if needed, household level datasets with individual level ones, based on the user-selected variables. To simplify this selection, `lissyuse()`automatically includes a set of technical variables: weights, id's, currency, year and dname.
+
+For quicker and more efficient jobs, we strongly advise the selection of a restrict group of variables in the argument `vars`*.*
+
+You can click on the following links for more information on [how to start with LISSY](https://www.lisdatacenter.org/data-access/lissy/), and on [METIS](https://www.lisdatacenter.org/frontend#/home) for detailed information on our available datasets and their respective variables.
+
+## Usage
+
+```{r, eval = FALSE}
+lissyuse(
+  data = NULL, 
+  vars = NULL, 
+  from = NULL, 
+  to = NULL, 
+  subset = NULL, 
+  lws = FALSE
+)  
+```
+
+## Arguments
+
++-----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `data`    | A character vector containing the datasets to be loaded.                                                                                                                                                                                                    |
+|           |                                                                                                                                                                                                                                                             |
+|           | 1.  One can select the datasets separately, using their *ccyy* format, e.g., `data = c("de16", "it20")`; \| \|                                                                                                                                              |
+|           |                                                                                                                                                                                                                                                             |
+|           | 2.  To select and entire series from a given country, we recommend the use of the format *cc*, e.g., `data = c("us", "uk")`; \| \| \|                                                                                                                       |
+|           |                                                                                                                                                                                                                                                             |
+|           | 3.  These two formats can also be used simultaneously, e.g., `data = c("be", "es", "br21", "br20")`**.** \| \|                                                                                                                                              |
++-----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `vars`    | A character vector specifying the LIS/LWS variables to be loaded, e.g., `vars = c("dhi", "region_c", "age", "relation")`.                                                                                                                                   |
+|           |                                                                                                                                                                                                                                                             |
+|           | If no variables are specified, the entire dataset will be loaded.                                                                                                                                                                                           |
+|           |                                                                                                                                                                                                                                                             |
+|           | If only household-level variables are selected (e.g., `c("dhi", "region_c")`), the data will be loaded at the household level. However, if at least one person-level variable is included (e.g., `"age"`), the data will be loaded at the individual level. |
+|           |                                                                                                                                                                                                                                                             |
+|           | When selecting specific variables, note that some additional variables will be included by default. For clarity, run `lissyrtools::key_vars_household_lis`, `lissyrtools::key_vars_person_lis`, and their equivalents for LWS.                              |
++-----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `from`    | A numeric value representing the year (inclusive) after which the LIS/LWS datasets should be loaded.                                                                                                                                                        |
++-----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `to`      | A numeric value representing the year (inclusive) up to which the LIS/LWS datasets should be loaded.                                                                                                                                                        |
++-----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `subset`  | A logical expression defining the criteria for subsetting the data. Observations for which the expression evaluates to `TRUE` are included in the subset.                                                                                                   |
++-----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `lws`     | A logical value indicating whether to load LWS data. If `TRUE`, LWS data is loaded; otherwise (default: `FALSE`), LIS data is loaded instead. Note that this does not eliminate the need to set the 'Project' field accordingly in the LISSY remote system. |
++-----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+## Value
+
+A list named `lis_datasets` or `lws_datasets`. Each element of the list will be a data frame named after their respective datasets. See the naming formats in the examples below. Each data frame will contain as many columns as the selected variables, plus the default technical ones.
+
+## Examples
+
+```{r, eval = FALSE}
+
+library(lissyrtools)
+library(dplyr)
+
+# LIS # 
+
+# Loading a list of data frames of merged h and p-level datasets.  
+lissyuse( 
+  data = c("it", "de16", "us19"), 
+  vars  = c("dhi", "region_c", "age", "hourstot", "status1"), 
+  subset = "!is.na(status1) & relation %in% c(1000,2000)"
+)
+
+# To check the names of the data frames. 
+names(lis_datasets)
+
+# Ways of selecting certain elemennts 
+lis_datasets[["it14"]]   # By their name
+lis_datasets[1:3]        # By their respective order within lis_datasets
+
+# Selecting all the italian datasets, while restrict them to a certain year range. 
+lissyuse(
+  data = c("it"), 
+  vars  = c("dhi", "region_c"), 
+  from = 2004, 
+  to = 2016
+)
+
+# Notice that in the previous line only h-level variables were selected. 
+# This will lead to slightly different names for the data frames. 
+names(lis_datasets)
+
+
+# By selecting h-level variables, lissyuse will not merge the p-level files for that country-year. 
+# The names of the data frames will be "ccyyih", or "cccyyip" if only p-level variables were chosen. 
+
+
+# LWS # 
+
+# Example for LWS 
+lissyuse(
+  data = c("us", "uk17", "uk19"), 
+  vars = "dnw", 
+  from = 2015, 
+  to = 2021,
+  lws = TRUE
+)
+
+# When working with LWS datasets, the list will be named lws_datasets
+names(lws_datasets)
+ 
+
 ```
