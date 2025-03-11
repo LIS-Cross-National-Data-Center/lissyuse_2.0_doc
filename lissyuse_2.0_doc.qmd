@@ -7,7 +7,7 @@ editor: visual
 
 ## Description
 
-The function `lissyuse()` enables LISSY R-users to quickly import whole series of data from a specific country and/or within any time period. Test Test 2025
+The function `lissyuse()` enables LISSY R-users to quickly import whole series of data from a specific country and/or within any time period. **Ready ??**
 
 It also automatically merges, if needed, household level datasets with individual level ones, based on the user-selected variables. To simplify this selection, `lissyuse()`automatically includes a set of technical variables: weights, id's, currency, year and dname.
 
